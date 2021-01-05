@@ -1,5 +1,11 @@
 # .gitignore
+# ----------------------------------------------------------------
 # ECV-IV project
+# ----------------------------------------------------------------
 
+# ignore Eclispe configuration file
+.project
+.pydevproject
+.settings
 
 # end of file
