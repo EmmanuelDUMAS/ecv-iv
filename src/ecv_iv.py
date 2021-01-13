@@ -41,7 +41,8 @@
 # 15/10/2020 Creation ................................................ E. Dumas
 # 20/10/2020 Set file as args ........................................ E. Dumas
 # 29/12/2020 First operational version ............................... E. Dumas
-# 05/01/2020 Move in a separate project : ECV-IV ..................... E. Dumas
+# 05/01/2021 Move in a separate project : ECV-IV ..................... E. Dumas
+# 13/01/2021 Support aboslute path filename .......................... E. Dumas
 # -----------------------------------------------------------------------------
 
 import argparse
@@ -87,10 +88,21 @@ if __name__ == "__main__":
     
     secArg = "http://127.0.0.1:8008" + curPath + "/ecv_load_img.html"
     if len(args.files) == 1:
-        secArg += "?f1=%s" % (os.getcwd() + "/" + args.files[0])
+        if args.files[0][0] == "/":
+            f1 = args.files[0]
+        else:
+            f1 = os.getcwd() + "/" + args.files[0]
+        secArg += "?f1=%s" % (f1,)
     elif len(args.files) >= 2:
-        secArg += "?f1=%s&f2=%s" % (os.getcwd() + "/" + args.files[0],
-                                    os.getcwd() + "/" + args.files[1])
+        if args.files[0][0] == "/":
+            f1 = args.files[0]
+        else:
+            f1 = os.getcwd() + "/" + args.files[0]
+        if args.files[1][0] == "/":
+            f2 = args.files[1]
+        else:
+            f2 = os.getcwd() + "/" + args.files[1]
+        secArg += "?f1=%s&f2=%s" % (f1, f2)
     
     lArgs = [ "firefox", secArg ]
     if args.d:
