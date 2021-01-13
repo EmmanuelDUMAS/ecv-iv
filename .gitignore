@@ -8,4 +8,9 @@
 .pydevproject
 .settings
 
+# python file
+__pycache__
+*.pyc
+
+
 # end of file
