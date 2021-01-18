@@ -42,7 +42,8 @@
 # 20/10/2020 Set file as args ........................................ E. Dumas
 # 29/12/2020 First operational version ............................... E. Dumas
 # 05/01/2021 Move in a separate project : ECV-IV ..................... E. Dumas
-# 13/01/2021 Support aboslute path filename .......................... E. Dumas
+# 13/01/2021 Support absolute path filename .......................... E. Dumas
+# 18/01/2021 Use now main() function ................................. E. Dumas
 # -----------------------------------------------------------------------------
 
 import argparse
@@ -50,6 +51,7 @@ import http.server
 import os
 import socketserver
 import subprocess
+import sys
 from functools import partial
 from multiprocessing import Process
 
@@ -69,7 +71,8 @@ def basicHttpServer():
         httpd.serve_forever()
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("files", nargs='*')
     parser.add_argument("-d", action="store_true")
@@ -112,5 +115,8 @@ if __name__ == "__main__":
     
     pserv.join()
     
+
+if __name__ == "__main__":
+    sys.exit(main())
 
 # end of file
