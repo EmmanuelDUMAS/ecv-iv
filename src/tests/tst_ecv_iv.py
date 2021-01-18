@@ -37,6 +37,7 @@
 # History
 # 19/10/2020 Creation ................................................ E. Dumas
 # 29/12/2020 First operational version ............................... E. Dumas
+# 18/01/2021 Add test_SimpleOtherImage() ............................. E. Dumas
 # -----------------------------------------------------------------------------
 
 # native python import
@@ -85,11 +86,23 @@ class TST_EdsImgViewer(unittest.TestCase):
         """
         print("test Dataset 01")
         
-        p = subprocess.Popen( [ "python3",
-                                "../ecv_iv.py",
+        p = subprocess.Popen( [ "../ecv_iv.py",
                                 "-d",
                                 "image_a.png",
                                 "image_b.png"])
+        p.wait()
+    
+    def test_SimpleOtherImage(self):
+        """test a simple run with 2 basic images
+        19/10/2020 Creation .......................................... E. Dumas
+        """
+        print("test Dataset 01")
+        
+        p = subprocess.Popen( [ "../ecv_iv.py",
+                                "-d",
+                                "/home/manu/esus/phototeque/P1080667.JPG",
+                                "/home/manu/esus/phototeque/P1080668.JPG",
+                              ])
         p.wait()
     
 
@@ -101,8 +114,8 @@ def TST_TestSuite_EdsImgViewer(testSuite, oneByOne=False):
     19/10/2020
     """
     allTests = (
-        "test_SimpleRun",
-        # "test_Dataset_02",
+        # "test_SimpleRun",
+        "test_SimpleOtherImage",
     )
     
     if oneByOne is True:
