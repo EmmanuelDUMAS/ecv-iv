@@ -35,6 +35,7 @@ History
 29/12/2020 First operational version ................................. E. Dumas
 05/01/2021 Update as independante project - ECV-IV ................... E. Dumas
 13/01/2021 First responsive version .................................. E. Dumas
+19/01/2021 Move javascript in a separate directory ................... E. Dumas
 ===============================================================================
 -->
 <head>
@@ -42,7 +43,8 @@ History
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Load Image</title>
     
-    <script>
+    <script type="text/javascript" src="ecv_load_img.js"></script>
+    <!-- <script>
 "use strict";
 
 class ecv_GlobalInfo {
@@ -335,7 +337,7 @@ function draw() {
 } /* draw() */
 
   
-    </script>
+    </script> -->
 </head>
 
 <body onload="draw();">
