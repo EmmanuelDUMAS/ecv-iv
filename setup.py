@@ -52,11 +52,11 @@ setup(
     license="BSD",
     keywords="simple image viewer",
     url="https://github.com/EmmanuelDUMAS/ecv-iv",
-    packages=["src", ],
-    package_data={"src": [ "ecv_load_img.html",
-                           "ecv_load_img.js",
-                         ]},
-    entry_points={'console_scripts': ['ecv_iv=src.ecv_iv:main']},
+    packages=["ecv_iv", ],
+    package_data={"ecv_iv": [ "ecv_load_img.html",
+                              "ecv_load_img.js",
+                              ]},
+    entry_points={'console_scripts': ['ecv_iv=ecv_iv.ecv_iv:main']},
     long_description="""ecv-iv
 
 EDS CV lib - Image Viewer

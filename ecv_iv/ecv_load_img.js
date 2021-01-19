@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ===============================================================================
 History
 19/01/2021 Extract from ecv_load_img.html ............................ E. Dumas
+19/01/2021 Support only one image .................................... E. Dumas
 ===============================================================================
 */
 
@@ -54,8 +55,11 @@ class ecv_GlobalInfo {
     resize(ev) {
       this.view1.resize(ev);
       this.view1.updateOneImage();
-      this.view2.resize(ev);
-      this.view2.updateOneImage();
+      if (this.view2 != null)
+      {
+        this.view2.resize(ev);
+        this.view2.updateOneImage();
+      }
     } /* resize */
     
     initEvent() {
@@ -77,6 +81,8 @@ class ecv_Viewer {
     this.startX = 0;
     this.startY = 0;
     this.isMove = false;
+    
+    this.img = null;
   }
   
   /* ----------------------------------------------------------------------- */
@@ -92,6 +98,13 @@ class ecv_Viewer {
                  this.globalInfo.tx.toString() + " ty=" +
                  this.globalInfo.ty.toString() +
                  ")"); */
+    
+    if (this.img == null)
+    {
+      return;
+    }
+    
+    this.ctx.imageSmoothingEnabled = false;
     this.ctx.drawImage( this.img,
                         this.globalInfo.tx, this.globalInfo.ty,
                         this.rect.width * this.globalInfo.zx, this.rect.height * this.globalInfo.zy,
@@ -263,13 +276,20 @@ class ecv_Viewer {
 
   /* ----------------------------------------------------------------------- */
   resize(ev) {
-    console.log("resize");
+    // console.log("resize");
     var ww = window.innerWidth;
     var wh = window.innerHeight;
     
-    console.log("resize w=" + ww.toString() + "," + wh.toString());
+    // console.log("resize w=" + ww.toString() + "," + wh.toString());
     
-    this.ctx.canvas.width = (ww - 50) / 2;
+    if (this.globalInfo.view2!=null)
+    {
+      this.ctx.canvas.width = (ww - 50) / 2;
+    }
+    else
+    {
+      this.ctx.canvas.width = (ww - 25);
+    }
     this.ctx.canvas.height = wh - 75;
     
     this.rect = this.canvas.getBoundingClientRect();
@@ -310,7 +330,7 @@ filename1=null;
 var filename2;
 filename2=null;
 
-var tx, ty;
+/* var tx, ty;
 tx = 0;
 ty = 0;
 var zx, zy;
@@ -323,7 +343,7 @@ var mouseX, mouseY;
 var rect1, rect2;
 var ctx1, ctx2;
 var cursorX, cursorY;
-var img1, img2;
+var img1, img2; */
 
 function draw() {
   /* search filename */
@@ -338,8 +358,9 @@ function draw() {
   document.getElementById("f1").textContent = f1;
   document.getElementById("f2").textContent = f2;
   
-  console.log("f1=" + f1);
-  console.log("f2=" + f2);
+  /* console.log("f1=" + f1);
+   *console.log("f2=" + f2);
+   */
   filename1 = f1;
   filename2 = f2;
   
@@ -349,8 +370,17 @@ function draw() {
   globalInfo.view1 = new ecv_Viewer("imageView_1", "textZone_1", f1, globalInfo);
   globalInfo.view1.initImage();
   
-  globalInfo.view2 = new ecv_Viewer("imageView_2", "textZone_2", f2, globalInfo);
-  globalInfo.view2.initImage();
+  if (f2 != null)
+  {
+    globalInfo.view2 = new ecv_Viewer("imageView_2", "textZone_2", f2, globalInfo);
+    globalInfo.view2.initImage();
+  }
+  else
+  {
+    document.getElementById("d2").hidden = true;
+    // document.getElementById("d1").setAttribute("style","float:left;width=100%");
+    document.getElementById("d1").style.width="100%";
+  }
   
   globalInfo.initEvent();
   

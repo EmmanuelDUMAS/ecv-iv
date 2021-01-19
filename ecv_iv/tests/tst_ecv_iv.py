@@ -51,7 +51,7 @@ import subprocess
 # project import
 
 # tested file
-from src import ecv_iv
+from ecv_iv import ecv_iv
 
 
 # -----------------------------------------------------------------------------
@@ -87,9 +87,21 @@ class TST_EdsImgViewer(unittest.TestCase):
         print("test Dataset 01")
         
         p = subprocess.Popen( [ "../ecv_iv.py",
-                                "-d",
+                                "-d",  # for starting JS console
                                 "image_a.png",
                                 "image_b.png"])
+        p.wait()
+    
+    def test_SimpleOneImage(self):
+        """test a simple run with 1 basic image
+        19/01/2021 Creation .......................................... E. Dumas
+        """
+        # print("test Dataset 02")
+        
+        p = subprocess.Popen( [ "../ecv_iv.py",
+                                "-d",  # for starting JS console
+                                "image_a.png",
+                              ])
         p.wait()
     
     def test_SimpleOtherImage(self):
@@ -99,7 +111,7 @@ class TST_EdsImgViewer(unittest.TestCase):
         print("test Dataset 01")
         
         p = subprocess.Popen( [ "../ecv_iv.py",
-                                "-d",
+                                "-d",  # for starting JS console
                                 "/home/manu/esus/phototeque/P1080667.JPG",
                                 "/home/manu/esus/phototeque/P1080668.JPG",
                               ])
@@ -114,12 +126,13 @@ def TST_TestSuite_EdsImgViewer(testSuite, oneByOne=False):
     19/10/2020
     """
     allTests = (
-        # "test_SimpleRun",
+        "test_SimpleRun",
+        "test_SimpleOneImage",
         "test_SimpleOtherImage",
     )
     
     if oneByOne is True:
-        runTests = (allTests[0], )
+        runTests = (allTests[1], )
     else:
         runTests = allTests
     
@@ -133,7 +146,7 @@ def TST_TestSuite_EdsImgViewer(testSuite, oneByOne=False):
 
 if __name__ == "__main__":
     testSuite = unittest.TestSuite()
-    TST_TestSuite_EdsImgViewer(testSuite, oneByOne=False)
+    TST_TestSuite_EdsImgViewer(testSuite, oneByOne=True)
     unittest.TextTestRunner(verbosity=2).run(testSuite)
 
 

@@ -74,8 +74,10 @@ def basicHttpServer():
 # if __name__ == "__main__":
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("files", nargs='*')
-    parser.add_argument("-d", action="store_true")
+    parser.add_argument("files", nargs='*',
+                        help="image file(s) to display")
+    parser.add_argument("-d", action="store_true",
+                        help="start JS console (debug)")
     args = parser.parse_args()
     print("args=", args)
     # print("args.files=", args.files)
