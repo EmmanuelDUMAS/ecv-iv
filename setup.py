@@ -35,6 +35,7 @@
 # SETUP for Image viewer ECV-IV
 # -----------------------------------------------------------------------------
 # 18/01/2021 Creation ................................................ E. Dumas
+# 19/01/2021 Add ecv_load_img.js ..................................... E. Dumas
 # -----------------------------------------------------------------------------
 
 # import os
@@ -46,14 +47,14 @@ setup(
     version="0.1",
     author="Emmanuel DUMAS",
     author_email="emmanuel.dumas@free.fr",
-    description=("An demonstration of how to create, document, and publish "
-                 "to the cheese shop a5 pypi.org."),
+    description=("Simple Image viewer with web technologies"),
     license="BSD",
     keywords="simple image viewer",
     url="https://github.com/EmmanuelDUMAS/ecv-iv",
     packages=["src", ],
-    package_data={"src": ["ecv_load_img.html", ]},
-    # data_files=["src.ecv_load_img.html", ],
+    package_data={"src": [ "ecv_load_img.html",
+                           "ecv_load_img.js",
+                         ]},
     entry_points={'console_scripts': ['ecv_iv=src.ecv_iv:main']},
     long_description="""ecv-iv
 
