@@ -44,6 +44,7 @@
 # 05/01/2021 Move in a separate project : ECV-IV ..................... E. Dumas
 # 13/01/2021 Support absolute path filename .......................... E. Dumas
 # 18/01/2021 Use now main() function ................................. E. Dumas
+# 09/11/2021 Minor clean ............................................. E .Dumas
 # -----------------------------------------------------------------------------
 
 import argparse
@@ -79,7 +80,7 @@ def main():
     parser.add_argument("-d", action="store_true",
                         help="start JS console (debug)")
     args = parser.parse_args()
-    print("args=", args)
+    # print("args=", args)
     # print("args.files=", args.files)
     #    ->args.files= ['f1', 'f2', 'f3']
     
@@ -89,6 +90,7 @@ def main():
     curPath = os.path.normpath( os.path.join( os.getcwd(),
                                               os.path.dirname(__file__ ) ) )
     # print("curPath=", curPath)
+    # Example :
     # curPath= /home/xxx/working/eds-cv-lib/tools/edsimgviewer
     
     secArg = "http://127.0.0.1:8008" + curPath + "/ecv_load_img.html"
