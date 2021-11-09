@@ -45,7 +45,7 @@ from setuptools import setup
 
 setup(
     name="ECV-IV",
-    version="0.2",
+    version="0.3",
     author="Emmanuel DUMAS",
     author_email="emmanuel.dumas@free.fr",
     description=("Simple Image viewer with web technologies"),
