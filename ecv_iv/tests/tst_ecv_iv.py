@@ -98,7 +98,7 @@ class TST_EdsImgViewer(unittest.TestCase):
         """
         # print("test Dataset 02")
         
-        p = subprocess.Popen( [ "../ecv_iv.py",
+        p = subprocess.Popen( [ "ecv_iv/ecv_iv.py",
                                 "-d",  # for starting JS console
                                 "image_a.png",
                               ])

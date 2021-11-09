@@ -44,10 +44,11 @@
 # 05/01/2021 Move in a separate project : ECV-IV ..................... E. Dumas
 # 13/01/2021 Support absolute path filename .......................... E. Dumas
 # 18/01/2021 Use now main() function ................................. E. Dumas
-# 09/11/2021 Minor clean ............................................. E .Dumas
+# 09/11/2021 Server stays in background (daemon) ..................... E .Dumas
 # -----------------------------------------------------------------------------
 
 import argparse
+import http.client
 import http.server
 import os
 import socketserver
@@ -71,10 +72,17 @@ def basicHttpServer():
         print("serving at port", PORT)
         httpd.serve_forever()
 
+def forkify():
+    """create a process fork and run the function
+    """
+    if os.fork() != 0:
+        return
+    basicHttpServer()
+
 
 # if __name__ == "__main__":
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(epilog="version 0.3")
     parser.add_argument("files", nargs='*',
                         help="image file(s) to display")
     parser.add_argument("-d", action="store_true",
@@ -84,8 +92,19 @@ def main():
     # print("args.files=", args.files)
     #    ->args.files= ['f1', 'f2', 'f3']
     
-    pserv = Process(target=basicHttpServer)
-    pserv.start()
+    c = http.client.HTTPConnection('127.0.0.1', 8008, timeout=1)
+    try:
+        c.request("HEAD","/")
+    except ConnectionRefusedError as e:
+        print("e=", e)
+        if e.errno == 111:
+            print("Start server")
+            pserv = Process(target=forkify)
+            pserv.start()
+            pserv.join()
+            print("Server started")
+        else:
+            raise
     
     curPath = os.path.normpath( os.path.join( os.getcwd(),
                                               os.path.dirname(__file__ ) ) )
@@ -116,8 +135,6 @@ def main():
         lArgs.append("-jsconsole")
     
     pLauncher = subprocess.run( lArgs )
-    
-    pserv.join()
     
 
 if __name__ == "__main__":
