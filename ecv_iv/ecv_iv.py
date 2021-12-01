@@ -45,12 +45,15 @@
 # 13/01/2021 Support absolute path filename .......................... E. Dumas
 # 18/01/2021 Use now main() function ................................. E. Dumas
 # 09/11/2021 Server stays in background (daemon) ..................... E .Dumas
+# 01/12/2021 Quick and dirty update for Windows ...................... E. Dumas
 # -----------------------------------------------------------------------------
 
 import argparse
 import http.client
 import http.server
 import os
+import pathlib
+import platform
 import socketserver
 import subprocess
 import sys
@@ -75,10 +78,42 @@ def basicHttpServer():
 def forkify():
     """create a process fork and run the function
     """
-    if os.fork() != 0:
-        return
-    basicHttpServer()
+    system = platform.system()
+    if system == "Windows":
+        # print("Windows system")
 
+        # no "fork" strategies
+        basicHttpServer()
+
+    elif system == "Linux":    
+        # print("system=", system)
+        if os.fork() != 0:
+            return
+        basicHttpServer()
+    else:
+        raise Exception("Unsupported system '%s'" % system)
+
+def startServer():
+    # print("Start server - 00")
+    pserv = Process(target=forkify)
+    pserv.start()
+
+    # EDS 01/12/2021 : do better latter
+    if platform.system() != "Windows":
+        pserv.join()
+    
+    print("Server started")
+
+def formatPath(p):
+    p2 = os.path.normpath( os.path.join( os.getcwd(), p) )
+    print("p2=", p2)
+    if platform.system() == "Windows":
+        r = pathlib.PurePath(p2).as_posix()[2:]
+    else:
+        r = pathlib.PurePath(p2).as_posix()
+    print("r=", r)
+
+    return r
 
 # if __name__ == "__main__":
 def main():
@@ -92,48 +127,69 @@ def main():
     # print("args.files=", args.files)
     #    ->args.files= ['f1', 'f2', 'f3']
     
+    # print("main - 20")
+
     c = http.client.HTTPConnection('127.0.0.1', 8008, timeout=1)
     try:
         c.request("HEAD","/")
     except ConnectionRefusedError as e:
         print("e=", e)
         if e.errno == 111:
-            print("Start server")
-            pserv = Process(target=forkify)
-            pserv.start()
-            pserv.join()
-            print("Server started")
+            startServer()
         else:
             raise
+    except TimeoutError as e:
+        # print("e=", e)
+        startServer()
     
-    curPath = os.path.normpath( os.path.join( os.getcwd(),
-                                              os.path.dirname(__file__ ) ) )
+    # print("main - 40")
+
+    # EDS 01/12/2021 - factorization in formatPath
+    # curPath = os.path.normpath( os.path.join( os.getcwd(),
+    #                                          os.path.dirname(__file__ ) ) )
     # print("curPath=", curPath)
-    # Example :
-    # curPath= /home/xxx/working/eds-cv-lib/tools/edsimgviewer
-    
-    secArg = "http://127.0.0.1:8008" + curPath + "/ecv_load_img.html"
+    # # Example :
+    # # curPath= /home/xxx/working/eds-cv-lib/tools/edsimgviewer
+    # # or on windows :
+    # # curPath= c:\Users\Dumas\source\repos\ecv-iv\ecv_iv
+    # if platform.system() == "Windows":
+    #    formatPath = pathlib.PurePath(curPath).as_posix()[2:]
+    # else:
+    #     formatPath = curPath
+
+    fPath = formatPath( os.path.dirname(__file__ ) )
+    print("fPath=", fPath)
+
+    secArg = "http://127.0.0.1:8008" + fPath + "/ecv_load_img.html"
     if len(args.files) == 1:
         if args.files[0][0] == "/":
             f1 = args.files[0]
         else:
-            f1 = os.getcwd() + "/" + args.files[0]
+            # f1 = os.getcwd() + "/" + args.files[0]
+            f1 = formatPath( args.files[0] )
         secArg += "?f1=%s" % (f1,)
     elif len(args.files) >= 2:
         if args.files[0][0] == "/":
             f1 = args.files[0]
         else:
-            f1 = os.getcwd() + "/" + args.files[0]
+            # f1 = os.getcwd() + "/" + args.files[0]
+            f1 = formatPath( args.files[0] )
         if args.files[1][0] == "/":
             f2 = args.files[1]
         else:
-            f2 = os.getcwd() + "/" + args.files[1]
+            # f2 = os.getcwd() + "/" + args.files[1]
+            f2 = formatPath( args.files[1] )
         secArg += "?f1=%s&f2=%s" % (f1, f2)
     
-    lArgs = [ "firefox", secArg ]
+    if platform.system() != "Windows":
+        lArgs = [ "firefox", secArg ]
+    else:
+        lArgs = [ "C:\\Program Files\\Mozilla Firefox\\firefox.exe", secArg ]
     if args.d:
         lArgs.append("-jsconsole")
     
+    print("lArgs=", *lArgs)
+
     pLauncher = subprocess.run( lArgs )
     
 
