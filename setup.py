@@ -41,6 +41,7 @@
 # 19/01/2021 Add ecv_load_img.js ..................................... E. Dumas
 # 19/01/2021 Switch to version 0.2 ................................... E. Dumas
 # 09/11/2021 Switch to version 0.3 ................................... E. Dumas
+# 14/01/2022 Switch to version 0.4 ................................... E. Dumas
 # -----------------------------------------------------------------------------
 
 # import os
@@ -49,7 +50,7 @@ from setuptools import setup
 
 setup(
     name="ECV-IV",
-    version="0.3",
+    version="0.4",
     author="Emmanuel DUMAS",
     author_email="emmanuel.dumas@free.fr",
     description=("Simple Image viewer with web technologies"),
