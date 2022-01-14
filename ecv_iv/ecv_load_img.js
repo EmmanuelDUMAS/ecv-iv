@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 History
 19/01/2021 Extract from ecv_load_img.html ............................ E. Dumas
 19/01/2021 Support only one image .................................... E. Dumas
+01/12/2021 Set line in red ........................................... E. Dumas
 ===============================================================================
 */
 
@@ -42,8 +43,8 @@ class ecv_GlobalInfo {
     constructor() {
         this.tx = 0;
         this.ty = 0;
-        this.zx = 1;
-        this.zy = 1;
+        this.zx = 2.0;
+        this.zy = 2.0;
         
         this.cursorX = 100;
         this.cursorY = 100;
@@ -114,6 +115,7 @@ class ecv_Viewer {
     if (this.globalInfo.tx < 0 )
     {
       this.ctx.beginPath();
+      this.ctx.fillStyle = "grey";
       this.ctx.fillRect(0, 0, -this.globalInfo.tx / this.globalInfo.zx, this.rect.height);
       this.ctx.stroke();
     }
@@ -121,6 +123,7 @@ class ecv_Viewer {
     if (this.globalInfo.ty < 0 )
     {
       this.ctx.beginPath();
+      this.ctx.fillStyle = "grey";
       this.ctx.fillRect(0, 0, this.rect.width, -this.globalInfo.ty / this.globalInfo.zy);
       this.ctx.stroke();
     }
@@ -128,6 +131,7 @@ class ecv_Viewer {
     if ( (this.globalInfo.tx + this.rect.width * this.globalInfo.zx ) > this.img.width )
     {
       this.ctx.beginPath();
+      this.ctx.fillStyle = "grey";
       this.ctx.fillRect( (- this.globalInfo.tx + this.img.width) / this.globalInfo.zx, 0,
                          this.rect.width, this.rect.height);
       this.ctx.stroke();
@@ -136,6 +140,7 @@ class ecv_Viewer {
     if ( (this.globalInfo.ty + this.rect.height * this.globalInfo.zy ) > this.img.height )
     {
       this.ctx.beginPath();
+      this.ctx.fillStyle = "grey";
       this.ctx.fillRect( 0, (- this.globalInfo.ty + this.img.height) / this.globalInfo.zy,
                          this.rect.width, this.rect.height);
       this.ctx.stroke();
@@ -155,11 +160,13 @@ class ecv_Viewer {
     );
     
     this.ctx.beginPath();
+    this.ctx.strokeStyle = "red";
     this.ctx.moveTo(this.globalInfo.cursorX, 0);
     this.ctx.lineTo(this.globalInfo.cursorX, this.rect.height);
     this.ctx.stroke();
     
     this.ctx.beginPath();
+    this.ctx.strokeStyle = "red";
     this.ctx.moveTo(0, this.globalInfo.cursorY);
     this.ctx.lineTo(this.rect.width, this.globalInfo.cursorY);
     this.ctx.stroke();
@@ -195,10 +202,6 @@ class ecv_Viewer {
   /* ----------------------------------------------------------------------- */
   /* handler on load image */
   onLoadImage(ev) {
-    /* this.ctx.drawImage( this.img,
-                        this.globalInfo.tx, this.globalInfo.ty,
-                        this.rect.width, this.rect.height,
-                        0 , 0 , this.rect.width, this.rect.height); */
     this.updateOneImage();
     this.setText("image loaded");
   }
@@ -212,16 +215,6 @@ class ecv_Viewer {
     this.globalInfo.cursorY = ev.clientY - this.rect.top;
     this.isMove = true;
     
-    /*
-    var myImageData = this.ctx.getImageData(ev.offsetX, ev.offsetY, 1, 1).data;
-    
-    this.setText(
-        this.startX.toString() + ";" + this.startY.toString() + " : RGBA " +
-        myImageData[0].toString() + "," +
-        myImageData[1].toString() + "," +
-        myImageData[2].toString() + "," +
-        myImageData[3].toString()
-    ); */
     this.updateAllImages();
   }
   
@@ -330,21 +323,6 @@ filename1=null;
 var filename2;
 filename2=null;
 
-/* var tx, ty;
-tx = 0;
-ty = 0;
-var zx, zy;
-zx=1;
-zy=1;
-var isMove;
-isMove=false;
-var startX, startY;
-var mouseX, mouseY;
-var rect1, rect2;
-var ctx1, ctx2;
-var cursorX, cursorY;
-var img1, img2; */
-
 function draw() {
   /* search filename */
   const url = new URL(document.URL);
@@ -378,7 +356,6 @@ function draw() {
   else
   {
     document.getElementById("d2").hidden = true;
-    // document.getElementById("d1").setAttribute("style","float:left;width=100%");
     document.getElementById("d1").style.width="100%";
   }
   
