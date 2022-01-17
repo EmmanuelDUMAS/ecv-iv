@@ -84,10 +84,12 @@ setup(
     license="BSD",
     keywords="simple image viewer",
     url="https://github.com/EmmanuelDUMAS/ecv-iv",
-    # packages=["ecv_iv", ],
     executables = [
         Executable( "ecv_iv/ecv_iv.py",
                     base=None)],
+    packages=[
+        'ecv_iv',
+    ],
     package_data={"ecv_iv": [ "ecv_load_img.html",
                               "ecv_load_img.js",
                               ]},
