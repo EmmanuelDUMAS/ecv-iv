@@ -3,7 +3,7 @@
 <!--
 BSD 3-Clause License
 
-Copyright (c) 2020-2021, Emmanuel DUMAS
+Copyright (c) 2020-2022, Emmanuel DUMAS
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,7 @@ History
 13/01/2021 First responsive version .................................. E. Dumas
 19/01/2021 Move javascript in a separate directory ................... E. Dumas
 02/12/2021 Remove old and obsolete code .............................. E. Dumas
+17/01/2022 Add button "H" ............................................ E. Dumas
 ===============================================================================
 -->
 <head>
@@ -49,6 +50,9 @@ History
 
 <body onload="draw();">
    <p style="text-align:center;margin:0px">EDS Img Viewer</p>
+   <div id="top" style="float:top;width=100%">
+     <button onclick="setHome()">H</button>
+   </div>
    <div id="d1" style="float:left;width=50%">
     <div id="f1"></div>
     <div><canvas id="imageView_1" tabindex="1" style="border:1px solid #000000"></canvas></div>
