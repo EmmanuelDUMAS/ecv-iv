@@ -4,7 +4,7 @@
 # -------------------------------------------------------
 # BSD 3-Clause License
 #
-# Copyright (c) 2020-2021, Emmanuel DUMAS
+# Copyright (c) 2020-2022, Emmanuel DUMAS
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -46,6 +46,7 @@
 # 18/01/2021 Use now main() function ................................. E. Dumas
 # 09/11/2021 Server stays in background (daemon) ..................... E .Dumas
 # 01/12/2021 Quick and dirty update for Windows ...................... E. Dumas
+# 17/01/2022 Add checkStartServer() .................................. E. Dumas
 # -----------------------------------------------------------------------------
 
 import argparse
@@ -57,6 +58,7 @@ import platform
 import socketserver
 import subprocess
 import sys
+import time
 from functools import partial
 from multiprocessing import Process
 
@@ -104,31 +106,11 @@ def startServer():
     
     print("Server started")
 
-def formatPath(p):
-    p2 = os.path.normpath( os.path.join( os.getcwd(), p) )
-    print("p2=", p2)
-    if platform.system() == "Windows":
-        r = pathlib.PurePath(p2).as_posix()[2:]
-    else:
-        r = pathlib.PurePath(p2).as_posix()
-    print("r=", r)
-
-    return r
-
-# if __name__ == "__main__":
-def main():
-    parser = argparse.ArgumentParser(epilog="version 0.3")
-    parser.add_argument("files", nargs='*',
-                        help="image file(s) to display")
-    parser.add_argument("-d", action="store_true",
-                        help="start JS console (debug)")
-    args = parser.parse_args()
-    # print("args=", args)
-    # print("args.files=", args.files)
-    #    ->args.files= ['f1', 'f2', 'f3']
+def checkStartServer():
+    """Check if we need to start Server, and if needed start Server
+    17/01/2022 : extract from main()
+    """
     
-    # print("main - 20")
-
     c = http.client.HTTPConnection('127.0.0.1', 8008, timeout=1)
     try:
         c.request("HEAD","/")
@@ -141,43 +123,66 @@ def main():
     except TimeoutError as e:
         # print("e=", e)
         startServer()
+
+def formatPath(p):
+    p2 = os.path.normpath( os.path.join( os.getcwd(), p) )
+    print("p2=", p2)
+    if platform.system() == "Windows":
+        r = pathlib.PurePath(p2).as_posix()[2:]
+    else:
+        r = pathlib.PurePath(p2).as_posix()
+    print("r=", r)
+
+    return r
+
+def main():
+    parser = argparse.ArgumentParser(epilog="version 0.4")
+    parser.add_argument("files", nargs='*',
+                        help="image file(s) to display")
+    parser.add_argument("-d", action="store_true",
+                        help="start JS console (debug)")
+    args = parser.parse_args()
+    # print("args=", args)
+    # print("args.files=", args.files)
+    #    ->args.files= ['f1', 'f2', 'f3']
+    
+    # print("main - 20")
+
+    # Mutualization in checkStartServer() - 17/01/2022
+    # c = http.client.HTTPConnection('127.0.0.1', 8008, timeout=1)
+    # try:
+    #    c.request("HEAD","/")
+    # except ConnectionRefusedError as e:
+    #    print("e=", e)
+    #    if e.errno == 111:
+    #        startServer()
+    #    else:
+    #        raise
+    # except TimeoutError as e:
+    #    # print("e=", e)
+    #    startServer()
+    checkStartServer()
     
     # print("main - 40")
 
-    # EDS 01/12/2021 - factorization in formatPath
-    # curPath = os.path.normpath( os.path.join( os.getcwd(),
-    #                                          os.path.dirname(__file__ ) ) )
-    # print("curPath=", curPath)
-    # # Example :
-    # # curPath= /home/xxx/working/eds-cv-lib/tools/edsimgviewer
-    # # or on windows :
-    # # curPath= c:\Users\Dumas\source\repos\ecv-iv\ecv_iv
-    # if platform.system() == "Windows":
-    #    formatPath = pathlib.PurePath(curPath).as_posix()[2:]
-    # else:
-    #     formatPath = curPath
-
     fPath = formatPath( os.path.dirname(__file__ ) )
-    print("fPath=", fPath)
+    print("fPath for current file=", fPath)
 
     secArg = "http://127.0.0.1:8008" + fPath + "/ecv_load_img.html"
     if len(args.files) == 1:
         if args.files[0][0] == "/":
             f1 = args.files[0]
         else:
-            # f1 = os.getcwd() + "/" + args.files[0]
             f1 = formatPath( args.files[0] )
         secArg += "?f1=%s" % (f1,)
     elif len(args.files) >= 2:
         if args.files[0][0] == "/":
             f1 = args.files[0]
         else:
-            # f1 = os.getcwd() + "/" + args.files[0]
             f1 = formatPath( args.files[0] )
         if args.files[1][0] == "/":
             f2 = args.files[1]
         else:
-            # f2 = os.getcwd() + "/" + args.files[1]
             f2 = formatPath( args.files[1] )
         secArg += "?f1=%s&f2=%s" % (f1, f2)
     
@@ -190,7 +195,17 @@ def main():
     
     print("lArgs=", *lArgs)
 
-    pLauncher = subprocess.run( lArgs )
+    try:
+        pLauncher = subprocess.run( lArgs )
+    except Exception as e:
+        print("e=", e)
+    
+    # bad patch
+    if platform.system() == "Windows":
+        time.sleep(100000)
+
+    print("main() - 99")
+
     
 
 if __name__ == "__main__":
