@@ -1,6 +1,5 @@
 # .gitignore
 # ----------------------------------------------------------------
-# ECV-IV project
 # ----------------------------------------------------------------
 
 # ignore Eclispe configuration file
@@ -16,5 +15,7 @@ build
 dist
 ECV_IV.egg-info
 
+# Yes, I'm using emacs
+setup_win.py~
 
 # end of file
