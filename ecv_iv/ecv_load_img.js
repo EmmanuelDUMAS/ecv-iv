@@ -2,7 +2,7 @@
 
 BSD 3-Clause License
 
-Copyright (c) 2020-2021, Emmanuel DUMAS
+Copyright (c) 2020-2022, Emmanuel DUMAS
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,7 @@ History
 19/01/2021 Extract from ecv_load_img.html ............................ E. Dumas
 19/01/2021 Support only one image .................................... E. Dumas
 01/12/2021 Set line in red ........................................... E. Dumas
+17/01/2022 Add setHome() ............................................. E. Dumas
 ===============================================================================
 */
 
@@ -51,7 +52,7 @@ class ecv_GlobalInfo {
         
         this.view1 = null;
         this.view2 = null;
-    }
+    } /* constructor */
     
     resize(ev) {
       this.view1.resize(ev);
@@ -68,6 +69,21 @@ class ecv_GlobalInfo {
       
       this.resize(null);
     } /* initEvent */
+
+    setHome() {
+      this.tx = 0;
+      this.ty = 0;
+      this.zx = 2.0;
+      this.zy = 2.0;
+      
+      this.view1.updateOneImage();
+      if (this.view2 != null)
+      {
+        this.view2.updateOneImage();
+      }
+
+    } /* setHome */
+
 } /* class ecv_GlobalInfo() */
 
 class ecv_Viewer {
@@ -283,7 +299,7 @@ class ecv_Viewer {
     {
       this.ctx.canvas.width = (ww - 25);
     }
-    this.ctx.canvas.height = wh - 75;
+    this.ctx.canvas.height = wh - 95;
     
     this.rect = this.canvas.getBoundingClientRect();
     
@@ -323,6 +339,8 @@ filename1=null;
 var filename2;
 filename2=null;
 
+var globalInfo;
+  
 function draw() {
   /* search filename */
   const url = new URL(document.URL);
@@ -342,7 +360,7 @@ function draw() {
   filename1 = f1;
   filename2 = f2;
   
-  var globalInfo;
+  // var globalInfo;
   globalInfo = new ecv_GlobalInfo();
   
   globalInfo.view1 = new ecv_Viewer("imageView_1", "textZone_1", f1, globalInfo);
@@ -363,5 +381,10 @@ function draw() {
   
 } /* draw() */
 
+function setHome()
+{
+  console.log( "setHome() tx=");
+  globalInfo.setHome();
+} /* setHome() */
 
 /* end of file */
