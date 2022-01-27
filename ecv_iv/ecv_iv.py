@@ -47,6 +47,7 @@
 # 09/11/2021 Server stays in background (daemon) ..................... E .Dumas
 # 01/12/2021 Quick and dirty update for Windows ...................... E. Dumas
 # 17/01/2022 Add checkStartServer() .................................. E. Dumas
+# 26/01/2022 Hack for windows / wsl .................................. E. Dumas
 # -----------------------------------------------------------------------------
 
 import argparse
@@ -60,7 +61,8 @@ import subprocess
 import sys
 import time
 from functools import partial
-from multiprocessing import Process
+# from multiprocessing import Process
+import multiprocessing
 
 
 def basicHttpServer():
@@ -97,7 +99,7 @@ def forkify():
 
 def startServer():
     # print("Start server - 00")
-    pserv = Process(target=forkify)
+    pserv = multiprocessing.Process(target=forkify)
     pserv.start()
 
     # EDS 01/12/2021 : do better latter
@@ -165,10 +167,16 @@ def main():
     
     # print("main - 40")
 
+    print("__file__=", __file__)
+    print("os.__file__=", os.__file__)
+
     fPath = formatPath( os.path.dirname(__file__ ) )
     print("fPath for current file=", fPath)
 
     secArg = "http://127.0.0.1:8008" + fPath + "/ecv_load_img.html"
+
+
+
     if len(args.files) == 1:
         if args.files[0][0] == "/":
             f1 = args.files[0]
@@ -185,11 +193,19 @@ def main():
         else:
             f2 = formatPath( args.files[1] )
         secArg += "?f1=%s&f2=%s" % (f1, f2)
-    
+
+    print("platform=", platform.system() );
+        
     if platform.system() != "Windows":
-        lArgs = [ "firefox", secArg ]
+        # hack for WSL on windows
+        if os.path.isfile("/mnt/c/Program Files/Mozilla Firefox/firefox.exe"):
+            lArgs = [ "/mnt/c/Program Files/Mozilla Firefox/firefox.exe", secArg ]
+        else:
+            lArgs = [ "firefox", secArg ]
+        
     else:
         lArgs = [ "C:\\Program Files\\Mozilla Firefox\\firefox.exe", secArg ]
+    
     if args.d:
         lArgs.append("-jsconsole")
     
@@ -200,6 +216,8 @@ def main():
     except Exception as e:
         print("e=", e)
     
+    print("subprocess.run() done")
+
     # bad patch
     if platform.system() == "Windows":
         time.sleep(100000)
@@ -209,6 +227,8 @@ def main():
     
 
 if __name__ == "__main__":
+    # need for CX freeze under Windows
+    multiprocessing.freeze_support()
     sys.exit(main())
 
 # end of file
