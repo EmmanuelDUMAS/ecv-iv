@@ -37,11 +37,13 @@
 #  to create .msi file
 #    python3 ./setup_win.py  bdist_msi
 # -----------------------------------------------------------------------------
-# 17/01/2021 Creation ................................................ E. Dumas
+# 17/01/2022 Creation ................................................ E. Dumas
+# 26/01/2022 Solved bug with multiprocessing and cx_freeze ........... E. Dumas
 # -----------------------------------------------------------------------------
 
 # import os
 # from setuptools import setup
+import sys
 from cx_Freeze import setup, Executable
 
 # Create our registry key, and fill with install directory and exe
@@ -74,6 +76,8 @@ bdist_msi_options = {
     # "upgrade_code": "{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}",
 }
 
+if 'bdist_msi' in sys.argv:
+    sys.argv += ['--add-to-path', 'True']
 
 setup(
     name="ECV_IV",
@@ -97,6 +101,7 @@ setup(
         # "build_exe": build_exe_options,
         "bdist_msi": bdist_msi_options,
     },
+    add_to_path = True,
     entry_points={'console_scripts': ['ecv_iv=ecv_iv.ecv_iv:main']},
     long_description="""ecv_iv
 
