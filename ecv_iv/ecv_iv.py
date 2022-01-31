@@ -48,6 +48,7 @@
 # 01/12/2021 Quick and dirty update for Windows ...................... E. Dumas
 # 17/01/2022 Add checkStartServer() .................................. E. Dumas
 # 26/01/2022 Hack for windows / wsl .................................. E. Dumas
+# 31/01/2022 First operational version on windows .................... E. Dumas
 # -----------------------------------------------------------------------------
 
 import argparse
@@ -56,6 +57,7 @@ import http.server
 import os
 import pathlib
 import platform
+import site
 import socketserver
 import subprocess
 import sys
@@ -137,6 +139,56 @@ def formatPath(p):
 
     return r
 
+def searchHtmlFile():
+    """Search HTML file ecv_load_img.html in different case
+       - source code
+       - install software
+       - ...
+    """
+    # is a normal installation ?
+    sp = site.getsitepackages()
+    # ['/usr/local/lib/python3.8/dist-packages', '/usr/lib/python3/dist-packages', '/usr/lib/python3.8/dist-packages']
+    # or ['C:\\Program Files\\Python310', 'C:\\Program Files\\Python310\\lib\\site-packages']
+    for s in sp:
+        f = os.path.normpath( s + "/ecv_iv/ecv_load_img.html")
+        if os.path.isfile(f):
+            return f
+
+    s = formatPath( os.path.dirname(__file__ ) )
+    print("search HTml file s=", s)
+    f = os.path.normpath( s + "/ecv_load_img.html")
+    if os.path.isfile(f):
+       return f
+
+    if sp == []:
+        # cx_freeze on Windows ?
+        print("cx_freeze on Windows ?")
+        # print("sys.argv=", sys.argv)
+
+        import win32api
+        gmfn = win32api.GetModuleFileName(0)
+        print("gmfn=", gmfn)
+        # gmfn= C:\Program Files\ECV_IV\ecv_iv.exe
+
+        f = os.path.normpath( os.path.dirname(gmfn) + "\Lib\site-packages\ecv_iv\ecv_load_img.html" )
+        print("f", f)
+        if os.path.isfile(f):
+            print("%s  is a file" % f)
+            if platform.system() == "Windows":
+                fr = pathlib.PurePath(f).as_posix()[2:]
+            else:
+                fr = pathlib.PurePath(f).as_posix()
+
+            print("fr=", fr)
+
+            return fr
+        
+        raise Exception("%s is not a file" % f)
+
+
+
+    raise Exception("nothing found in " + str(sp))
+
 def main():
     parser = argparse.ArgumentParser(epilog="version 0.4")
     parser.add_argument("files", nargs='*',
@@ -170,12 +222,10 @@ def main():
     print("__file__=", __file__)
     print("os.__file__=", os.__file__)
 
-    fPath = formatPath( os.path.dirname(__file__ ) )
-    print("fPath for current file=", fPath)
+    # fPath = formatPath( os.path.dirname(__file__ ) )
+    # print("fPath for current file=", fPath)
 
-    secArg = "http://127.0.0.1:8008" + fPath + "/ecv_load_img.html"
-
-
+    secArg = "http://127.0.0.1:8008" + searchHtmlFile()
 
     if len(args.files) == 1:
         if args.files[0][0] == "/":
