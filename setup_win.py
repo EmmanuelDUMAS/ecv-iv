@@ -39,6 +39,7 @@
 # -----------------------------------------------------------------------------
 # 17/01/2022 Creation ................................................ E. Dumas
 # 26/01/2022 Solved bug with multiprocessing and cx_freeze ........... E. Dumas
+# 31/01/2022 Minor debug ............................................. E. Dumas
 # -----------------------------------------------------------------------------
 
 # import os
@@ -48,9 +49,9 @@ from cx_Freeze import setup, Executable
 
 # Create our registry key, and fill with install directory and exe
 registry_table = [
-        ('ECV_IVKLM'       , 2, r'SOFTWARE\ECV_IV', '*'         , None, 'TARGETDIR'),
-        ('ECV_ICInstallDir', 2, r'SOFTWARE\ECV_IV', 'InstallDir', '[TARGETDIR]', 'TARGETDIR'),
-        ('ECV_IVExecutable', 2, r'SOFTWARE\ECV_IV', 'Executable', '[TARGETDIR]ecv_iv.exe', 'TARGETDIR'),
+        ('ECV_IVKLM'       , 2, r'SOFTWARE\\ECV_IV', '*'         , None, 'TARGETDIR'),
+        ('ECV_ICInstallDir', 2, r'SOFTWARE\\ECV_IV', 'InstallDir', '[TARGETDIR]', 'TARGETDIR'),
+        ('ECV_IVExecutable', 2, r'SOFTWARE\\ECV_IV', 'Executable', '[TARGETDIR]ecv_iv.exe', 'TARGETDIR'),
     ]
 
 # Provide the locator and app search to give MSI the existing install directory
@@ -67,7 +68,7 @@ msi_data = {
     }
 
 bdist_msi_options = {
-    "add_to_path": True,
+    "add_to_path": True,  # unknown option
     "all_users": True,
     "data": msi_data,
     # "environment_variables": [
@@ -101,7 +102,7 @@ setup(
         # "build_exe": build_exe_options,
         "bdist_msi": bdist_msi_options,
     },
-    add_to_path = True,
+    # add_to_path = True,
     entry_points={'console_scripts': ['ecv_iv=ecv_iv.ecv_iv:main']},
     long_description="""ecv_iv
 
