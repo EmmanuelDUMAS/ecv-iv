@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-# ecv_iv.py
+# setup.py
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------
 # BSD 3-Clause License
 #
-# Copyright (c) 2021, Emmanuel DUMAS
+# Copyright (c) 2021-2022, Emmanuel DUMAS
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
