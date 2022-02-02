@@ -82,7 +82,7 @@ if 'bdist_msi' in sys.argv:
 
 setup(
     name="ECV_IV",
-    version="0.4",
+    version="0.5",
     author="Emmanuel DUMAS",
     author_email="emmanuel.dumas@free.fr",
     description=("Simple Image viewer with web technologies"),
