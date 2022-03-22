@@ -49,6 +49,7 @@
 # 17/01/2022 Add checkStartServer() .................................. E. Dumas
 # 26/01/2022 Hack for windows / wsl .................................. E. Dumas
 # 31/01/2022 First operational version on windows .................... E. Dumas
+# 23/03/2022 Update for 4 images ..................................... E. Dumas
 # -----------------------------------------------------------------------------
 
 import argparse
@@ -233,7 +234,7 @@ def main():
         else:
             f1 = formatPath( args.files[0] )
         secArg += "?f1=%s" % (f1,)
-    elif len(args.files) >= 2:
+    elif len(args.files) == 2:
         if args.files[0][0] == "/":
             f1 = args.files[0]
         else:
@@ -243,6 +244,38 @@ def main():
         else:
             f2 = formatPath( args.files[1] )
         secArg += "?f1=%s&f2=%s" % (f1, f2)
+    elif len(args.files) == 3:
+        if args.files[0][0] == "/":
+            f1 = args.files[0]
+        else:
+            f1 = formatPath( args.files[0] )
+        if args.files[1][0] == "/":
+            f2 = args.files[1]
+        else:
+            f2 = formatPath( args.files[1] )
+        if args.files[2][0] == "/":
+            f3 = args.files[2]
+        else:
+            f3 = formatPath( args.files[2] )
+        secArg += "?f1=%s&f2=%s&f3=%s" % (f1, f2, f3)
+    elif len(args.files) >= 4:
+        if args.files[0][0] == "/":
+            f1 = args.files[0]
+        else:
+            f1 = formatPath( args.files[0] )
+        if args.files[1][0] == "/":
+            f2 = args.files[1]
+        else:
+            f2 = formatPath( args.files[1] )
+        if args.files[2][0] == "/":
+            f3 = args.files[2]
+        else:
+            f3 = formatPath( args.files[2] )
+        if args.files[3][0] == "/":
+            f4 = args.files[3]
+        else:
+            f4 = formatPath( args.files[3] )
+        secArg += "?f1=%s&f2=%s&f3=%s&f4=%s" % (f1, f2, f3, f4)
 
     print("platform=", platform.system() );
         
