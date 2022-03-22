@@ -38,6 +38,7 @@ History
 19/01/2021 Move javascript in a separate directory ................... E. Dumas
 02/12/2021 Remove old and obsolete code .............................. E. Dumas
 17/01/2022 Add button "H" ............................................ E. Dumas
+23/03/2022 Update for 4 images ....................................... E. Dumas
 ===============================================================================
 -->
 <head>
@@ -50,20 +51,38 @@ History
 
 <body onload="draw();">
    <p style="text-align:center;margin:0px">EDS Img Viewer</p>
-   <div id="top" style="float:top;width=100%">
+   <div id="top" style="float:top;width:100%">
      <button onclick="setHome()">H</button>
+     <button onclick="setCursorRed()" style="color:red;">+</button>
+     <button onclick="setCursorGreen()" style="color:green;">+</button>
+     <button onclick="setCursorBlue()" style="color:blue;">+</button>
    </div>
-   <div id="d1" style="float:left;width=50%">
-    <div id="f1"></div>
-    <div><canvas id="imageView_1" tabindex="1" style="border:1px solid #000000"></canvas></div>
-    <div id="textZone_1">just started</div>
-   </div>
+   <div id="top_d12" style="float:top;width=100%">
+     <div id="d1" style="float:left;width=50%">
+       <div id="f1"></div>
+       <div><canvas id="imageView_1" tabindex="1" style="border:1px solid #000000"></canvas></div>
+       <div id="textZone_1">just started</div>
+     </div>
    
-   <div id="d2" style="float:right;width=50%">
-    <div id="f2"></div>
-    <div><canvas id="imageView_2" tabindex="1" style="border:1px solid #000000"></canvas></div>
-    <div id="textZone_2">just started</div>
+     <div id="d2" style="float:right;width=50%">
+       <div id="f2"></div>
+       <div><canvas id="imageView_2" tabindex="1" style="border:1px solid #000000"></canvas></div>
+       <div id="textZone_2">just started</div>
+     </div>
    </div>
+   <div id="top_d34" style="float:bottom;width=100%">
+      <div id="d3" style="float:left;width=50%">
+        <div id="f3"></div>
+        <div><canvas id="imageView_3" tabindex="1" style="border:1px solid #000000"></canvas></div>
+        <div id="textZone_3">just started</div>
+      </div>
+    
+      <div id="d4" style="float:right;width=50%">
+        <div id="f4"></div>
+        <div><canvas id="imageView_4" tabindex="1" style="border:1px solid #000000"></canvas></div>
+        <div id="textZone_4">just started</div>
+      </div>
+    </div>
 </body>
 </html>
 
