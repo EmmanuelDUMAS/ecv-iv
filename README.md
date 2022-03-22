@@ -19,13 +19,13 @@ On windows :
 C:\Users\> ecv_iv.exe imageFileName.png
 ```
 
-Bit more advance usage :  
+More advance usage :  
 ```
 joe@computer:$ ecv_iv imageFileName1.png imageFilename2.png
 ```
 
-# Who will be use icv_iv ?
-People that work on image with program on command line.  
+# Who needs icv_iv ?
+People that works on image with program on command line.  
 eg :
 ```
 joe@computer:$ myprogram imageInput.png   # produce imageOutput.png file
@@ -44,7 +44,7 @@ Double click .msi file.
 ## Install on Linux
 ```
 joe@computer:$ python3 setup.py build
-sjoe@computer:$ udo python3 setup.py install
+joe@computer:$ sudo python3 setup.py install
 ```
 
 # Origin
