@@ -35,6 +35,7 @@ History
 19/01/2021 Support only one image .................................... E. Dumas
 01/12/2021 Set line in red ........................................... E. Dumas
 17/01/2022 Add setHome() ............................................. E. Dumas
+23/03/2022 Update for 4 images ....................................... E. Dumas
 ===============================================================================
 */
 
@@ -49,9 +50,14 @@ class ecv_GlobalInfo {
         
         this.cursorX = 100;
         this.cursorY = 100;
+
+        this.colorCursor = "red";
         
+        /* init 4 defaults view */
         this.view1 = null;
         this.view2 = null;
+        this.view3 = null;
+        this.view4 = null;
     } /* constructor */
     
     resize(ev) {
@@ -62,10 +68,20 @@ class ecv_GlobalInfo {
         this.view2.resize(ev);
         this.view2.updateOneImage();
       }
+      if (this.view3 != null)
+      {
+        this.view3.resize(ev);
+        this.view3.updateOneImage();
+      }
+      if (this.view4 != null)
+      {
+        this.view4.resize(ev);
+        this.view4.updateOneImage();
+      }
     } /* resize */
     
     initEvent() {
-      window.addEventListener("resize"   , ev => this.resize(ev)    , false);
+      window.addEventListener("resize", ev => this.resize(ev), false);
       
       this.resize(null);
     } /* initEvent */
@@ -81,8 +97,35 @@ class ecv_GlobalInfo {
       {
         this.view2.updateOneImage();
       }
+      if (this.view3 != null)
+      {
+        this.view3.updateOneImage();
+      }
+      if (this.view4 != null)
+      {
+        this.view4.updateOneImage();
+      }
 
     } /* setHome */
+
+    setCursorColor(color) {
+      this.colorCursor = color;
+        
+      this.view1.updateOneImage();
+      if (this.view2 != null)
+      {
+        this.view2.updateOneImage();
+      }
+      if (this.view3 != null)
+      {
+        this.view3.updateOneImage();
+      }
+      if (this.view4 != null)
+      {
+        this.view4.updateOneImage();
+      }
+
+    } /* setCursorColor() */
 
 } /* class ecv_GlobalInfo() */
 
@@ -176,13 +219,13 @@ class ecv_Viewer {
     );
     
     this.ctx.beginPath();
-    this.ctx.strokeStyle = "red";
+    this.ctx.strokeStyle = this.globalInfo.colorCursor;
     this.ctx.moveTo(this.globalInfo.cursorX, 0);
     this.ctx.lineTo(this.globalInfo.cursorX, this.rect.height);
     this.ctx.stroke();
     
     this.ctx.beginPath();
-    this.ctx.strokeStyle = "red";
+    this.ctx.strokeStyle = this.globalInfo.colorCursor;
     this.ctx.moveTo(0, this.globalInfo.cursorY);
     this.ctx.lineTo(this.rect.width, this.globalInfo.cursorY);
     this.ctx.stroke();
@@ -199,6 +242,16 @@ class ecv_Viewer {
     if (this.globalInfo.view2 != null)
       {
          this.globalInfo.view2.updateOneImage();
+      }
+    
+    if (this.globalInfo.view3 != null)
+      {
+         this.globalInfo.view3.updateOneImage();
+      }
+    
+    if (this.globalInfo.view4 != null)
+      {
+         this.globalInfo.view4.updateOneImage();
       }
   }
   
@@ -262,18 +315,23 @@ class ecv_Viewer {
   /* ----------------------------------------------------------------------- */
   /* handler on keyDown */
   onKeyDown(ev) {
-    console.log("keyCode=" + ev.keyCode.toString());
-    if ( (ev.keyCode == 87) || (ev.keyCode == 107) ) /* "w" or "+" */
+    // console.log("keyCode=" + ev.keyCode.toString());
+    /*  "w" : 87
+     *  "x" : 88
+     *  "+" : 107
+     *  "-" : 109
+     */
+    if ( (ev.keyCode == 87) || (ev.keyCode == 109) ) /* "w" or "-" */
       {
-        console.log("w or +");
+        // console.log("w or -");
         this.zoom(ev, 1.1);
       }
-    else if ( (ev.keyCode == 88) || (ev.keyCode == 109) ) /* "x"  or "-" */
+    else if ( (ev.keyCode == 88) || (ev.keyCode == 107) ) /* "x"  or "+" */
       {
-        console.log("x or -");
+        // console.log("x or +");
         this.zoom(ev, 1.0/1.1);
       };
-  }
+  } /* onKeyDown() */
   
   /* ----------------------------------------------------------------------- */
   /* handler on keyDown */
@@ -291,19 +349,25 @@ class ecv_Viewer {
     
     // console.log("resize w=" + ww.toString() + "," + wh.toString());
     
-    if (this.globalInfo.view2!=null)
-    {
+    if (this.globalInfo.view3!=null)
+    {  /* three or four view */
       this.ctx.canvas.width = (ww - 50) / 2;
+      this.ctx.canvas.height = (wh - 150) / 2;
+    }
+    else if (this.globalInfo.view2!=null)
+    { /* two view */
+      this.ctx.canvas.width = (ww - 50) / 2;
+      this.ctx.canvas.height = wh - 95;
     }
     else
-    {
+    {  /* one view */
       this.ctx.canvas.width = (ww - 25);
+      this.ctx.canvas.height = wh - 95;
     }
-    this.ctx.canvas.height = wh - 95;
     
     this.rect = this.canvas.getBoundingClientRect();
     
-  }
+  } /* resize() */
   
   /* ----------------------------------------------------------------------- */
   /* init canvas and load image */
@@ -329,18 +393,22 @@ class ecv_Viewer {
     this.canvas.addEventListener("keydown"  , ev => this.onKeyDown(ev)  , false);
     this.canvas.addEventListener("wheel"    , ev => this.onWheel(ev)    , false);
     
-  }
+  } /* initImage() */
   
-}
+} /* class ecv_Viewer() */
 
 
 var filename1;
 filename1=null;
 var filename2;
 filename2=null;
+var filename3;
+filename3=null;
+var filename4;
+filename4=null;
 
 var globalInfo;
-  
+
 function draw() {
   /* search filename */
   const url = new URL(document.URL);
@@ -350,41 +418,98 @@ function draw() {
   var params = url.searchParams;
   var f1 = params.get('f1');
   var f2 = params.get('f2');
+  var f3 = params.get('f3');
+  var f4 = params.get('f4');
   
   document.getElementById("f1").textContent = f1;
   document.getElementById("f2").textContent = f2;
+  document.getElementById("f3").textContent = f3;
+  document.getElementById("f4").textContent = f4;
   
   /* console.log("f1=" + f1);
    *console.log("f2=" + f2);
    */
   filename1 = f1;
   filename2 = f2;
+  filename3 = f3;
+  filename4 = f4;
   
+  var nImages;
+
   // var globalInfo;
   globalInfo = new ecv_GlobalInfo();
   
   globalInfo.view1 = new ecv_Viewer("imageView_1", "textZone_1", f1, globalInfo);
   globalInfo.view1.initImage();
+  nImages = 1;
   
   if (f2 != null)
   {
     globalInfo.view2 = new ecv_Viewer("imageView_2", "textZone_2", f2, globalInfo);
     globalInfo.view2.initImage();
-  }
-  else
-  {
-    document.getElementById("d2").hidden = true;
-    document.getElementById("d1").style.width="100%";
+    nImages = 2;
   }
   
+  if (f3 != null)
+  {
+    globalInfo.view3 = new ecv_Viewer("imageView_3", "textZone_3", f3, globalInfo);
+    globalInfo.view3.initImage();
+    nImages = 3;
+  }
+
+  if (f4 != null)
+  {
+    globalInfo.view4 = new ecv_Viewer("imageView_4", "textZone_4", f4, globalInfo);
+    globalInfo.view4.initImage();
+    nImages = 4;
+  }
+
+  // console.log("nImages=" + nImages.toString() );
+
+  if (nImages == 1)
+  {
+    document.getElementById("d2").hidden = true;
+    document.getElementById("top_d34").hidden = true;
+  }
+  
+  if (nImages == 2)
+  {
+    document.getElementById("top_d34").hidden = true;
+  }
+
+  if (nImages == 3)
+  {
+    document.getElementById("d4").hidden = true;
+  }
+
   globalInfo.initEvent();
   
 } /* draw() */
 
 function setHome()
 {
-  console.log( "setHome() tx=");
+  // console.log( "setHome()");
   globalInfo.setHome();
 } /* setHome() */
+
+function setCursorRed()
+{
+  // console.log( "setCursorRed()");
+  globalInfo.setCursorColor("red");
+} /* setCursorRed() */
+
+function setCursorGreen()
+{
+  // console.log( "setCursorGreen()");
+  globalInfo.setCursorColor("green");
+} /* setCursorGreen() */
+
+function setCursorBlue()
+{
+  // console.log( "setCursorBlue()");
+  globalInfo.setCursorColor("blue");
+} /* setCursorBlue() */
+
+
 
 /* end of file */
